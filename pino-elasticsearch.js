@@ -4,6 +4,7 @@
 const minimist = require('minimist')
 const Writable = require('readable-stream').Writable
 const elasticsearch = require('elasticsearch')
+const AwsElasticsearch = require('aws-es')
 const Parse = require('fast-json-parse')
 const split = require('split2')
 const pump = require('pump')
@@ -23,12 +24,24 @@ function pinoElasticSearch (opts) {
 
     return value
   })
-  const client = new elasticsearch.Client({
-    host: opts.host + ':' + opts.port,
-    log: {
-      level: opts['trace-level'] || 'error'
-    }
-  })
+  let client;
+  if (!opts['aws-endpoint']) {
+    client = new elasticsearch.Client({
+      host: opts.host + ':' + opts.port,
+      log: {
+        level: opts['trace-level'] || 'error'
+      }
+    })
+  }
+  else {
+    client = new AwsElasticsearch({
+      accessKeyId: opts['aws-access-key'],
+      secretAccessKey: opts['aws-secret-key'],
+      service: 'es',
+      region: opts['aws-region'],
+      host: opts['aws-endpoint']
+    });
+  }
 
   const index = opts.index || 'pino'
   const type = opts.type || 'log'
