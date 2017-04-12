@@ -5,6 +5,10 @@
 
      [33mcat log | pino-elasticsearch --host 192.168.1.42[39m
 
+  To send pino logs to AWS ES:
+
+     cat log | pino-elasticsearch --aws-endpoint search-pino-xxxxx1412fasfxxx.us-east-1.es.amazonaws.com --aws-access-key fafasf --aws-secret-key asdad --aws-region us-east-1
+
   [36m[1mFlags[22m[39m
   [0m-h  | --help              Display Help
   -v  | --version           display Version
@@ -15,3 +19,8 @@
   -c  | --consistency       the consistency of the write; default: one
   -b  | --size              the number of documents for each bulk insert
   -l  | --trace-level       trace level for the elasticsearch client, default 'error' (info, debug, trace).
+
+  --aws-endpoint            AWS ES domain Endpoint
+  --aws-access-key          AWS ES IAM user access key
+  --aws-secret-key          AWS ES IAM user secret key
+  --aws-region              AWS ES region

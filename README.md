@@ -18,6 +18,10 @@ npm install pino-elasticsearch -g
 
      cat log | pino-elasticsearch --host 192.168.1.42
 
+  To send pino logs to AWS ES:
+
+     cat log | pino-elasticsearch --aws-endpoint search-pino-xxxxx1412fasfxxx.us-east-1.es.amazonaws.com --aws-access-key fafasf --aws-secret-key asdad --aws-region us-east-1
+
   Flags
   -h  | --help              Display Help
   -v  | --version           display Version
@@ -28,32 +32,14 @@ npm install pino-elasticsearch -g
   -b  | --size              the number of documents for each bulk insert
   -l  | --trace-level       trace level for the elasticsearch client, default 'error' (info, debug, trace).
 
-```
-
-You can then use [Kibana](https://www.elastic.co/products/kibana) to
-browse and visualize your logs.
-
-## Usage with AWS ES
-
-```
-  pino-elasticsearch
-
-  To send pino logs to AWS ES:
-
-     cat log | pino-elasticsearch --aws-endpoint search-pino-xxxxx1412fasfxxx.us-east-1.es.amazonaws.com --aws-access-key fafasf --aws-secret-key asdad --aws-region us-east-1
-
-  Flags
-  -h  | --help              Display Help
-  -v  | --version           display Version
-  -i  | --index             the name of the index to use; default: pino
-  -t  | --type              the name of the type to use; default: log
-  -b  | --size              the number of documents for each bulk insert
-
   --aws-endpoint            AWS ES domain Endpoint
   --aws-access-key          AWS ES IAM user access key
   --aws-secret-key          AWS ES IAM user secret key
   --aws-region              AWS ES region
 ```
+
+You can then use [Kibana](https://www.elastic.co/products/kibana) to
+browse and visualize your logs.
 
 ## Setup and Testing
 
