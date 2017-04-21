@@ -62,7 +62,7 @@ function pinoElasticSearch (opts) {
           docs[i] = chunks[Math.floor(i / 2)].chunk
         }
       }
-      client = getClient(opts)
+      const client = getClient(opts)
       client.bulk({
         body: docs
       }, function (err, result) {
@@ -83,7 +83,7 @@ function pinoElasticSearch (opts) {
     },
     write: function (body, enc, cb) {
       const obj = {index, type, body}
-      client = getClient(opts)
+      const client = getClient(opts)
       client.index(obj, function (err, data) {
         if (!err) {
           splitter.emit('insert', data, body)
