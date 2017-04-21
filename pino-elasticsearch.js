@@ -11,6 +11,26 @@ const pump = require('pump')
 const fs = require('fs')
 const path = require('path')
 
+function getClient(opts) {
+  if (!opts['aws-endpoint']) {
+    return new elasticsearch.Client({
+      host: opts.host + ':' + opts.port,
+      log: {
+        level: opts['trace-level'] || 'error'
+      }
+    })
+  }
+  else {
+    return new AwsElasticsearch({
+      accessKeyId: opts['aws-access-key'],
+      secretAccessKey: opts['aws-secret-key'],
+      service: 'es',
+      region: opts['aws-region'],
+      host: opts['aws-endpoint']
+    });
+  }
+}
+
 function pinoElasticSearch (opts) {
   const splitter = split(function (line) {
     var parsed = new Parse(line)
@@ -24,24 +44,6 @@ function pinoElasticSearch (opts) {
 
     return value
   })
-  let client;
-  if (!opts['aws-endpoint']) {
-    client = new elasticsearch.Client({
-      host: opts.host + ':' + opts.port,
-      log: {
-        level: opts['trace-level'] || 'error'
-      }
-    })
-  }
-  else {
-    client = new AwsElasticsearch({
-      accessKeyId: opts['aws-access-key'],
-      secretAccessKey: opts['aws-secret-key'],
-      service: 'es',
-      region: opts['aws-region'],
-      host: opts['aws-endpoint']
-    });
-  }
 
   const index = opts.index || 'pino'
   const type = opts.type || 'log'
@@ -60,6 +62,7 @@ function pinoElasticSearch (opts) {
           docs[i] = chunks[Math.floor(i / 2)].chunk
         }
       }
+      client = getClient(opts)
       client.bulk({
         body: docs
       }, function (err, result) {
@@ -80,6 +83,7 @@ function pinoElasticSearch (opts) {
     },
     write: function (body, enc, cb) {
       const obj = {index, type, body}
+      client = getClient(opts)
       client.index(obj, function (err, data) {
         if (!err) {
           splitter.emit('insert', data, body)
